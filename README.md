@@ -17,6 +17,10 @@ as follows:
 - Background character generator
 - Generic loot generator
 
+For character and loot generators, I plan on including the ability 
+to gather basic environment data from a file to prevent outlandish 
+generations.
+
 I will create these tools using some combination (at least 1) of 
 the following languages because of both learning purposes and their 
 ease of use:
