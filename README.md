@@ -14,8 +14,7 @@ Dungeons and Dragons 5th Edition.
 
 # B. Tools
 
-Some tools I plan on writing are 
-as follows:
+Some tools I plan on writing are as follows:
 
 - Combat tracker
 - Background character generator
@@ -31,9 +30,4 @@ I'll fill this in later once I have something written.
 
 # D. Implementation
 
-I will create these tools using some combination (at least 1, at 
-most all) of the following languages:
-
-- Python
-- Ruby
-- Java
+I will create these tools using Ruby, since this way I can learn Ruby.
