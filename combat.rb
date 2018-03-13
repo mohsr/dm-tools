@@ -24,7 +24,7 @@ class Combat
     # Purpose:    Initialize the fighters in combat.
     # Parameters: The amount of fighters to initialize.
     # Return:     n/a
-    def initFighters len
+    def initFighters(len)
         @fighters = []
         count = 1
         while count <= len
