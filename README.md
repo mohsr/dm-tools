@@ -1,5 +1,5 @@
 # dm-tools
-Some simple scripts to help you be a good dungeon master
+Some simple scripts to help you be an efficient dungeon master
 
 Written by: Mohsin Rizvi
 
