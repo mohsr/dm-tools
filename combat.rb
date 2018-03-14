@@ -15,9 +15,11 @@ class Combat
     # Purpose:    Run the combat tracker.
     # Parameters: n/a
     # Return:     n/a
-    def initialize
-        info
+    def initialize()
+        info()
         initFighters(inpMinNum(2, "> How many combatants are there?"))
+        surprise()
+        fight()
     end
 
     # initFighters
@@ -32,13 +34,13 @@ class Combat
 
             # Get combatant data
             puts "> What is this combatant's name?"
-            name = gets.chomp
-            hp   = inpMinNum(1, "> What is this combatant's HP?")
-            ac   = inpMinNum(1, "> What is this combatant's armor class?")
-            init = inpMinNum(1, "> What is this combatant's initiative?")
+            name  = gets.chomp
+            hp    = inpMinNum(1, "> What is this combatant's current HP?")
+            maxhp = inpMinNum(1, "> What is this combatant's max HP?")
+            init  = inpMinNum(1, "> What is this combatant's initiative?")
 
             # Create the combatant
-            @fighters.push Fighter.new(name, hp, ac, init)
+            @fighters.push Fighter.new(name, hp, maxhp, init)
 
             count += 1
         end
@@ -52,10 +54,148 @@ class Combat
     # Purpose:    Print out program info.
     # Parameters: n/a
     # Return:     n/a
-    def info
+    def info()
         puts ">> dm-tools combat tracker 0.0.1\n" + 
              ">> created by Mohsin Rizvi\n" +
              "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+    end
+
+    # surprise
+    # Purpose:    Give fighters a surprise round
+    # Parameters: n/a
+    # Return:     n/a
+    def surprise()
+        curr = ""
+        while true
+            # Get the next person to act
+            while !(inNames(curr))
+                puts "> Who has the next surprise attack? If nobody does, " + 
+                     "type \"none\"."
+                curr = gets.chomp.downcase
+                if curr == "none"
+                    return
+                end
+            end
+
+            # Do the person's action
+            action(curr)
+            curr = ""
+        end
+    end
+
+    # fight
+    # Purpose:    Have everyone fight!
+    # Parameters: n/a
+    # Return:     n/a
+    def fight()
+        # Begin fighting loop
+        while true
+
+        end
+    end
+
+    # inNames
+    # Purpose:    Check if a given name is the name of a fighter.
+    # Parameters: A name to check
+    # Return:     True if the name is a fighter, false otherwise
+    def inNames(name)
+        for i in @fighters
+            if i.name().downcase == name
+                return true
+            end
+        end
+        return false
+    end
+
+    # action
+    # Purpose:    Let a fighter make an action.
+    # Parameters: The name of the fighter, assumed to be valid
+    # Return:     n/a
+    def action(name)
+        puts "> What does #{name} do? The commands are as follows:\n" + 
+             "> attack:   [a target_name damage_dealt]\n" +
+             "> heal:     [h target_name health_healed]\n" + 
+             "> end turn: [e]"
+
+        # Begin the action REPL
+        while true
+            # Get a valid action
+            actions = "x"
+            while validAction(actions) == "x"
+                actions = gets.chomp.downcase.split()
+            end
+
+            case (actions[0])
+            when "a"
+                attack(actions[1], actions[2])
+            when "h"
+                heal(actions[1], actions[2])
+            when "e"
+                return
+            end
+        end
+    end
+
+    # validAction
+    # Purpose:    Check if a given action string is valid.
+    # Parameters: An array of strings in one of the following forms, where 
+    #             elements of the string are separated below by spaces:
+    #             attack:  [a target_name damage_dealt]
+    #             heal:    [h target_name health_healed]
+    #             end turn [e]
+    # Return:     Returns "x" if action is invalid, "a" if a successful attack is
+    #             done, "h" if a successful heal is done, and "e" if a turn is 
+    #             successfully ended.
+    def validAction(actions)
+        case (actions[0])
+        when "a"
+            if inNames(actions[1]) and actions.length >= 3
+                return "a"
+            end
+        when "h"
+            if inNames(actions[1]) and actions.length >= 3
+                return "h"
+            end
+        when "e"
+            return "e"
+        end
+
+        return "x"
+    end
+
+    # attack
+    # Purpose:    Deal damage to a Fighter.
+    # Parameters: The name of the Fighter to take damage and the damage dealt.
+    # Return:     n/a
+    def attack(target, dmg)
+        dmg = dmg.to_i
+        for i in @fighters
+            if i.name() == target
+                i.updateHP(-dmg)
+
+                if i.hp() == 0
+                    puts "#{target} is unconscious!"
+                elsif i.hp() <= (i.maxhp() / 2)
+                    puts "#{target} is bloodied!"
+                else
+                    puts "#{target} now has #{i.hp()} health!"
+                end
+            end
+        end
+    end
+
+    # heal
+    # Purpose:    Heal a Fighter.
+    # Parameters: The name of the Fighter to heal and the health restored.
+    # Return:     n/a
+    def heal(target, heal)
+        heal = heal.to_i
+        for i in @fighters
+            if i.name() == target
+                i.updateHP(heal)
+                puts "#{target} now has #{i.hp()} health!"
+            end
+        end
     end
 
 end
@@ -66,54 +206,70 @@ class Fighter
 
     # initialize
     # Purpose:    Initialize a Fighter with the given stats.
-    # Parameters: A name, the number of hitpoints, the armor class, and the 
-    #             initiative.
+    # Parameters: A name, the number of hitpoints, and the initiative.
     # Return:     n/a
-    def initialize(name, hp, ac, init)
-        @name = name
-        @hp   = hp
-        @ac   = ac
-        @init = init
+    def initialize(name, hp, maxhp, init)
+        @name  = name
+        @hp    = hp
+        @maxhp = maxhp
+        @init  = init
     end
 
     # to_s
     # Purpose:    Override the to_s function to allow printing a Fighter.
     # Paramaters: n/a
-    # Return:     n/a
-    def to_s
-        return "#{@name}: HP: #{@hp}, AC: #{@ac}, initiative: #{@init}"
+    # Return:     The string representation of the Fighter.
+    def to_s()
+        return "#{@name}: HP: #{@hp}/#{@maxhp}, initiative: #{@init}"
     end
 
     # name
     # Purpose:    Access the name attribute.
     # Parameters: n/a
-    # Return:     n/a
-    def name
+    # Return:     The name of the Fighter.
+    def name()
         return @name
     end
 
     # hp
     # Purpose:    Access the hp attribute.
     # Parameters: n/a
-    # Return:     n/a
-    def hp
+    # Return:     The hp of the Fighter.
+    def hp()
         return @hp
     end
 
-    # ac
-    # Purpose:    Access the ac attribute.
+    # maxhp
+    # Purpose:    Access the maxhp attribute.
     # Parameters: n/a
-    # Return:     n/a
-    def ac
-        return @ac
+    # Return:     The max hp of the Fighter.
+    def maxhp()
+        return @maxhp
     end
 
     # init
     # Purpose:    Access the init attribute.
     # Parameters: n/a
-    # Return:     n/a
-    def init
+    # Return:     The initiative of the Fighter.
+    def init()
         return @init
+    end
+
+    # updateHP
+    # Purpose:    Update the hp attribute.
+    # Parameters: The difference in hp of the Fighter.
+    # Return:     The new hp of the Fighter.
+    def updateHP(diff)
+        @hp += diff
+
+        if (@hp <= 0)
+            @hp = 0
+        end
+        if (@hp > @maxhp)
+            @hp = @maxhp
+        end
+
+        return @hp
     end
 
 end
