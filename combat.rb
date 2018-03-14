@@ -90,7 +90,10 @@ class Combat
     def fight()
         # Begin fighting loop
         while true
+            # Loop through fighters in order of initiative
+            for curr in @fighters
 
+            end
         end
     end
 
@@ -120,8 +123,8 @@ class Combat
         # Begin the action REPL
         while true
             # Get a valid action
-            actions = "x"
-            while validAction(actions) == "x"
+            actions = ["x"]
+            while validAction(actions) == ["x"]
                 actions = gets.chomp.downcase.split()
             end
 
@@ -144,9 +147,9 @@ class Combat
     #             attack:  [a target_name damage_dealt]
     #             heal:    [h target_name health_healed]
     #             end turn [e]
-    # Return:     Returns "x" if action is invalid, "a" if a successful attack is
-    #             done, "h" if a successful heal is done, and "e" if a turn is 
-    #             successfully ended.
+    # Return:     Returns "x" if action is invalid, "a" if a successful attack
+    #             is done, "h" if a successful heal is done, and "e" if a turn
+    #             is successfully ended.
     def validAction(actions)
         # Loop through possible actions
         case (actions[0])
@@ -267,9 +270,11 @@ class Fighter
     def updateHP(diff)
         @hp += diff
 
+        # If target is unconscious, they must have 0 hp
         if (@hp <= 0)
             @hp = 0
         end
+        # If target is at full health, they must have full health
         if (@hp > @maxhp)
             @hp = @maxhp
         end
