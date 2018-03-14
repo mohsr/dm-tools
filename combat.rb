@@ -30,13 +30,18 @@ class Combat
         @fighters = []
         count = 1
         while count <= len
-            puts "> Creating combatant #{count}..."
+            maxhp = -1
+            puts "\n> Creating combatant #{count}..."
 
             # Get combatant data
             puts "> What is this combatant's name?"
             name  = read().chomp
             hp    = inpMinNum(1, "> What is this combatant's current HP?")
             maxhp = inpMinNum(1, "> What is this combatant's max HP?")
+            while maxhp < hp
+                maxhp = inpMinNum(1, "> Please enter a max HP greater than " +
+                                     "or equal to the combatant's HP.")
+            end
             init  = inpMinNum(1, "> What is this combatant's initiative?")
 
             # Create the combatant
@@ -91,6 +96,7 @@ class Combat
     # Parameters: n/a
     # Return:     n/a
     def fight()
+        puts ""
         # Begin fighting loop
         while true
             # Loop through fighters in order of initiative
@@ -186,7 +192,7 @@ class Combat
                 # Report target status
                 if i.hp() == 0
                     puts "#{target} is unconscious! Enter \"q\" if combat " +
-                         " is over now."
+                         "is over now."
                 elsif i.hp() <= (i.maxhp() / 2)
                     puts "#{target} is bloodied!"
                 else
