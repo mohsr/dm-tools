@@ -125,6 +125,7 @@ class Combat
                 actions = gets.chomp.downcase.split()
             end
 
+            # Loop through possible actions
             case (actions[0])
             when "a"
                 attack(actions[1], actions[2])
@@ -147,6 +148,7 @@ class Combat
     #             done, "h" if a successful heal is done, and "e" if a turn is 
     #             successfully ended.
     def validAction(actions)
+        # Loop through possible actions
         case (actions[0])
         when "a"
             if inNames(actions[1]) and actions.length >= 3
@@ -171,8 +173,10 @@ class Combat
         dmg = dmg.to_i
         for i in @fighters
             if i.name() == target
+                # Update target's HP
                 i.updateHP(-dmg)
 
+                # Report target status
                 if i.hp() == 0
                     puts "#{target} is unconscious!"
                 elsif i.hp() <= (i.maxhp() / 2)
@@ -192,6 +196,7 @@ class Combat
         heal = heal.to_i
         for i in @fighters
             if i.name() == target
+                # Update target HP and report target status
                 i.updateHP(heal)
                 puts "#{target} now has #{i.hp()} health!"
             end
