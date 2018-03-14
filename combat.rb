@@ -34,13 +34,15 @@ class Combat
 
             # Get combatant data
             puts "> What is this combatant's name?"
-            name  = gets.chomp
+            name  = read().chomp
             hp    = inpMinNum(1, "> What is this combatant's current HP?")
             maxhp = inpMinNum(1, "> What is this combatant's max HP?")
             init  = inpMinNum(1, "> What is this combatant's initiative?")
 
             # Create the combatant
-            @fighters.push Fighter.new(name, hp, maxhp, init)
+            f = Fighter.new(name, hp, maxhp, init)
+            puts f.to_s()
+            @fighters.push f
 
             count += 1
         end
@@ -55,9 +57,10 @@ class Combat
     # Parameters: n/a
     # Return:     n/a
     def info()
-        puts ">> dm-tools combat tracker 0.0.1\n" + 
+        puts ">> dm-tools combat tracker 0.1\n" + 
              ">> created by Mohsin Rizvi\n" +
-             "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+             ">> enter \"q\" to exit at any time\n" + 
+             "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
     end
 
     # surprise
@@ -71,7 +74,7 @@ class Combat
             while !(inNames(curr))
                 puts "> Who has the next surprise attack? If nobody does, " + 
                      "type \"none\"."
-                curr = gets.chomp.downcase
+                curr = read().chomp.downcase
                 if curr == "none"
                     return
                 end
@@ -92,7 +95,8 @@ class Combat
         while true
             # Loop through fighters in order of initiative
             for curr in @fighters
-
+                puts "> It is #{curr.name()}'s turn!"
+                action(curr.name())
             end
         end
     end
@@ -123,9 +127,9 @@ class Combat
         # Begin the action REPL
         while true
             # Get a valid action
-            actions = ["x"]
-            while validAction(actions) == ["x"]
-                actions = gets.chomp.downcase.split()
+            actions = "x"
+            while validAction(actions) == "x"
+                actions = read().chomp.downcase.split()
             end
 
             # Loop through possible actions
@@ -181,7 +185,8 @@ class Combat
 
                 # Report target status
                 if i.hp() == 0
-                    puts "#{target} is unconscious!"
+                    puts "#{target} is unconscious! Enter \"q\" if combat " +
+                         " is over now."
                 elsif i.hp() <= (i.maxhp() / 2)
                     puts "#{target} is bloodied!"
                 else
@@ -296,7 +301,7 @@ def inpMinNum(min, message)
     # Attempt to get a number
     begin
         puts message
-        curr = Integer(gets.chomp)
+        curr = Integer(read())
         if curr < min
             raise
         end
@@ -306,6 +311,19 @@ def inpMinNum(min, message)
     end
 
     return curr
+end
+
+# read
+# Purpose:    Read something from stdin. If it is the exit character "q", halt
+#             execution.
+# Parameters: n/a
+# Return:     A string read in from stdin.
+def read()
+    s = gets.chomp
+    if s == "q"
+        exit
+    end
+    return s
 end
 
 # Clear the screen
