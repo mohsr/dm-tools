@@ -5,7 +5,7 @@
 # Feel free to play around with the script if you do things otherwise.
 #
 # Written by:  Mohsin Rizvi
-# Last edited: 03/12/18
+# Last edited: 03/14/18
 
 # Combat
 # Used to represent a combat scene.
