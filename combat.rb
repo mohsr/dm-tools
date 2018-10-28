@@ -7,6 +7,8 @@
 # Written by:  Mohsin Rizvi
 # Last edited: 03/14/18
 
+require "readline"
+
 # Combat
 # Used to represent a combat scene.
 class Combat
@@ -33,7 +35,7 @@ class Combat
             maxhp = -1
             puts "\n> Creating combatant #{count}..."
 
-            # Get combatant data
+            # Get combatant data - currently only supports 1 word names
             puts "> What is this combatant's name?"
             name  = read().chomp
             hp    = inpMinNum(1, "> What is this combatant's current HP?")
